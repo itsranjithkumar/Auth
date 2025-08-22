@@ -19,7 +19,7 @@ function SignupFormDemo() {
           <GoogleAuthButton
             onSuccess={async (idToken: string) => {
               try {
-                const res = await fetch("http://127.0.0.1:8000/google-login", {
+                const res = await fetch("https://auth-u3qe.onrender.com/google-login", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ id_token: idToken }),
