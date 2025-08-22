@@ -6,7 +6,9 @@ import { VideoCard } from "@/components/video-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Sparkles, TrendingUp, Play, BookOpen, Brain } from "lucide-react"
+import Link from "next/link"
 import { videoData } from "@/lib/data"
+import type { VideoQuestion, VideoFlashcard } from "@/lib/video-types"
 
 export default function DashboardPage() {
   // Normalize videoData to ensure question_stats always has the required fields
@@ -34,11 +36,14 @@ export default function DashboardPage() {
           Match: video.question_stats?.Match ?? 0,
           FillBlanks: video.question_stats?.FillBlanks ?? 0,
         },
-        questions: (video.questions ?? []).map((q: any) => ({
+        questions: (video.questions ?? []).map((q: VideoQuestion) => ({
           ...q,
+          question: q.question ?? "",
+          correct_answer: q.correct_answer ?? "",
+          explanation: q.explanation ?? "",
           difficulty: q.difficulty ?? "",
         })),
-        flashcards: (video.flashcards ?? []).map((f: any) => ({
+        flashcards: (video.flashcards ?? []).map((f: VideoFlashcard) => ({
           ...f,
           front: f.front ?? "",
           back: f.back ?? "",
@@ -52,10 +57,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const progress = JSON.parse(localStorage.getItem("userProgress") || "[]")
+      interface UserProgress {
+        videoId: string;
+        lastQuestionIndex: number;
+        updatedAt: string;
+      }
+      const progress: UserProgress[] = JSON.parse(localStorage.getItem("userProgress") || "[]")
       const videos = progress
-        .map((p: any) => normalizedVideoData.find((v) => v._id === p.videoId))
-        .filter(Boolean)
+        .map((p: UserProgress) => normalizedVideoData.find((v) => v._id === p.videoId))
+        .filter((v): v is typeof normalizedVideoData[number] => Boolean(v))
         .slice(0, 3)
       if (videos.length > 0) {
         setContinueLearningVideos(videos)
@@ -88,24 +98,30 @@ export default function DashboardPage() {
             paths designed for deep learning mastery.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`/videos/${featuredVideos[0]?._id || ""}`}>
+            <Link href={`/videos/${featuredVideos[0]?._id || ""}`} passHref legacyBehavior>
               <Button
+                asChild
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-200"
               >
-                Start Learning
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <a>
+                  Start Learning
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </a>
               </Button>
-            </a>
-            <a href="/videos">
+            </Link>
+            <Link href="/videos" passHref legacyBehavior>
               <Button
+                asChild
                 variant="outline"
                 size="lg"
                 className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 rounded-full text-lg font-medium transition-all duration-200 bg-transparent"
               >
-                Browse Library
+                <a>
+                  Browse Library
+                </a>
               </Button>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -194,7 +210,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {continueLearningVideos.map((video: any) => (
+            {continueLearningVideos.map((video) => (
               <VideoCard key={video._id} video={video} />
             ))}
           </div>

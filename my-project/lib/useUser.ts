@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { usePathname } from "next/navigation";
+// Define a type for the decoded JWT
+interface DecodedJWT {
+  email?: string;
+  sub?: string;
+  avatar?: string;
+  [key: string]: unknown;
+}
+
 export interface User {
   email: string;
-  [key: string]: any;
+  avatar?: string;
+  [key: string]: unknown;
 }
 
 export function useUser() {
@@ -14,14 +23,14 @@ export function useUser() {
     const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (token) {
       try {
-        const data = jwtDecode(token);
+        const data = jwtDecode<DecodedJWT>(token);
         // DEBUG: Log the decoded token and raw token
         console.log('Decoded user from JWT:', data);
         console.log('Raw JWT token:', token);
         // Try to get avatar from JWT or fallback to Gravatar
         // Type guards for JWT fields
-        let email = (data as any).email || (data as any).sub || "";
-        let avatar = (data as any).avatar;
+        const email = data.email || data.sub || "";
+        let avatar = data.avatar;
         // Try to get avatar from localStorage if not present in JWT
         if (!avatar) {
           avatar = typeof window !== "undefined" ? localStorage.getItem("avatar") || undefined : undefined;

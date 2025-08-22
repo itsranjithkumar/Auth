@@ -39,7 +39,7 @@ export function Navigation() {
                 {user.avatar && (
                   <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
                 )}
-                <span className="font-medium text-gray-800">{user.email || user.sub}</span>
+                <span className="font-medium text-gray-800">{String(user.email ?? user.sub ?? "")}</span>
               </div>
             ) : (
               <Link href="/sign-in">
@@ -80,7 +80,7 @@ export function Navigation() {
                   {user.avatar && (
                     <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
                   )}
-                  <span className="font-medium text-gray-800">{user.email || user.sub}</span>
+                  <span className="font-medium text-gray-800">{String(user.email ?? user.sub ?? "")}</span>
                 </div>
               ) : (
                 <Link href="/sign-in">

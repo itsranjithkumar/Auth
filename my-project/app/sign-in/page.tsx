@@ -1,6 +1,6 @@
 "use client"
 import { GoogleAuthButton } from "../../components/GoogleAuthButton"
-
+import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
 
 function SigninFormDemo() {
@@ -28,7 +28,8 @@ function SigninFormDemo() {
                   const result = await res.json()
                   // Decode Google ID token to get Google avatar
                   try {
-                    const googleProfile = require('jwt-decode').default(idToken);
+                    // jwtDecode is imported at the top
+                    const googleProfile = jwtDecode(idToken) as { picture?: string };
                     if (googleProfile.picture) {
                       localStorage.setItem("avatar", googleProfile.picture);
                     }

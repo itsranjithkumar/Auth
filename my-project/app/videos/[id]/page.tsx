@@ -35,8 +35,13 @@ export default function VideoDetailPage() {
 
     // Save progress
     if (typeof window !== "undefined") {
-      const progress = JSON.parse(localStorage.getItem("userProgress") || "[]")
-      const idx = progress.findIndex((p: any) => p.videoId === video._id)
+      interface UserProgress {
+        videoId: string;
+        lastQuestionIndex: number;
+        updatedAt: string;
+      }
+      const progress: UserProgress[] = JSON.parse(localStorage.getItem("userProgress") || "[]")
+      const idx = progress.findIndex((p: UserProgress) => p.videoId === video._id)
       if (idx >= 0) {
         progress[idx].lastQuestionIndex = currentQuestionIndex
         progress[idx].updatedAt = new Date().toISOString()

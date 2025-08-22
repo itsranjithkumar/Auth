@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, BookOpen, Brain, Trophy } from "lucide-react"
+import type { StatsOverviewVideo } from "@/lib/stats-types"
 
 interface StatsOverviewProps {
-  data: any[]
+  data: StatsOverviewVideo[]
 }
 
 export function StatsOverview({ data }: StatsOverviewProps) {
