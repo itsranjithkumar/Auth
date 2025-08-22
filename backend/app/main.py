@@ -14,11 +14,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",                   # local dev
+        "https://auth-five-smoky.vercel.app"       # deployed frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 load_dotenv()
 GOOGLE_CLIENT_ID = os.getenv('ClientID') or os.getenv('GOOGLE_CLIENT_ID')
