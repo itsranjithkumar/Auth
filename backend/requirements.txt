@@ -5,3 +5,4 @@ psycopg2-binary
 google-auth
 python-dotenv
 requests-oauthlib
+email-validator
