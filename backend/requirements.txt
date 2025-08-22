@@ -6,3 +6,4 @@ google-auth
 python-dotenv
 requests-oauthlib
 email-validator
+passlib[bcrypt]
