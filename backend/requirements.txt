@@ -7,3 +7,4 @@ python-dotenv
 requests-oauthlib
 email-validator
 passlib[bcrypt]
+python-jose
