@@ -7,10 +7,34 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Sparkles, TrendingUp, Play, BookOpen, Brain } from "lucide-react"
 import Link from "next/link"
-import { videoData } from "@/lib/data"
+import { fetchVideoData } from "@/lib/data"
+import { LoaderOne } from "@/components/ui/loader"
 import type { VideoQuestion, VideoFlashcard } from "@/lib/video-types"
 
 export default function DashboardPage() {
+  const [videoData, setVideoData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    setLoading(true)
+    fetchVideoData()
+      .then((data) => {
+        if (mounted) {
+          setVideoData(Array.isArray(data) ? data : data?.videos || [])
+          setLoading(false)
+        }
+      })
+      .catch((err) => {
+        if (mounted) {
+          setError(err.message || "Failed to load videos")
+          setLoading(false)
+        }
+      })
+    return () => { mounted = false }
+  }, [])
+
   // Normalize videoData to ensure question_stats always has the required fields
   const normalizedVideoData = useMemo(
     () =>
@@ -76,6 +100,21 @@ export default function DashboardPage() {
     }
   }, [normalizedVideoData])
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-blue-50">
+        <LoaderOne />
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-blue-50">
+        <span className="text-xl text-red-500">{error}</span>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <Navigation />
@@ -125,7 +164,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
           <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-blue-100 rounded-2xl p-3">
@@ -162,6 +201,20 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 mb-1">Flashcards</h3>
             <p className="text-gray-600 text-sm">Memory reinforcement</p>
           </div>
+
+          <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-yellow-100 rounded-2xl p-3">
+                {/* You can use a suitable icon for match pairs, e.g., Sparkles or ArrowRight */}
+                <Sparkles className="w-6 h-6 text-yellow-600" />
+              </div>
+              <span className="text-3xl font-bold text-gray-900">
+                {normalizedVideoData.reduce((sum, video) => sum + (video.question_stats?.Match || 0), 0)}
+              </span>
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">Match Pairs</h3>
+            <p className="text-gray-600 text-sm">Pair-matching challenges</p>
+          </div>
         </div>
 
         {/* Featured Content */}
@@ -186,8 +239,8 @@ export default function DashboardPage() {
               if (
                 idx === 3 &&
                 (!video.details || !video.details.title || !video.details.thumbnail_url ||
-                  ((Array.isArray(video.questions) && video.questions.filter(q => q && q.question).length === 0) &&
-                   (Array.isArray(video.flashcards) && video.flashcards.filter(f => f && f.front && f.back && !f.error).length === 0))
+                  ((Array.isArray(video.questions) && video.questions.filter((q: { question: any }) => q && q.question).length === 0) &&
+                   (Array.isArray(video.flashcards) && video.flashcards.filter((f: { front: any; back: any; error: any }) => f && f.front && f.back && !f.error).length === 0))
                 )
               ) {
                 return null

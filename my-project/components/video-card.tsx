@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Play, Clock, BookOpen, Brain } from "lucide-react"
+import { Play, Clock, BookOpen, Brain, Sparkles } from "lucide-react"
 import Link from "next/link"
 
 interface MCQQuestion {
@@ -99,6 +99,15 @@ export function VideoCard({ video }: VideoCardProps) {
                         <Brain className="w-3 h-3 text-purple-600" />
                       </div>
                       <span className="text-sm font-medium">{video.flashcards.filter(f => f && f.front && f.back && !f.error).length}</span>
+                    </div>
+                  )}
+                  {/* Show Match Pairs count only if there are real match pairs */}
+                  {video.question_stats?.Match > 0 && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <div className="bg-yellow-100 rounded-full p-1.5">
+                        <Sparkles className="w-3 h-3 text-yellow-600" />
+                      </div>
+                      <span className="text-sm font-medium">{video.question_stats.Match}</span>
                     </div>
                   )}
                 </div>
