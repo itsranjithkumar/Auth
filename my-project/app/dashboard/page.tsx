@@ -242,11 +242,14 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-semibold text-gray-900 mb-1">Match Pairs</h3>
             <p className="text-gray-600 text-sm">Pair-matching challenges</p>
-              <div className="bg-orange-100 rounded-2xl p-3">
-                <Tag className="w-6 h-6 text-orange-600" />
-              </div>
-              <span className="text-3xl font-bold text-gray-900">{allTags.length}</span>
+          </div>
+
+          {/* Topics stat box */}
+          <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 shadow-sm">
+            <div className="bg-orange-100 rounded-2xl p-3">
+              <Tag className="w-6 h-6 text-orange-600" />
             </div>
+            <span className="text-3xl font-bold text-gray-900">{allTags.length}</span>
             <h3 className="font-semibold text-gray-900 mb-1">Topics</h3>
             <p className="text-gray-600 text-sm">Learning categories</p>
           </div>

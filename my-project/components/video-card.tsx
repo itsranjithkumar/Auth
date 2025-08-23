@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Play, Clock, BookOpen, Brain, Sparkles } from "lucide-react"
+import { Play, Clock, BookOpen, Brain, Sparkles, Tag } from "lucide-react"
 import Link from "next/link"
 
 interface MCQQuestion {
@@ -36,6 +36,7 @@ interface VideoCardProps {
     api_call_count: {
       total_calls: number
     }
+    tags?: string[]
     questions?: MCQQuestion[]
     flashcards?: Flashcard[]
   }
@@ -77,7 +78,18 @@ export function VideoCard({ video }: VideoCardProps) {
                 {video.details.title}
               </h3>
 
-              <p className="text-gray-600 text-sm mb-6 line-clamp-1 font-medium">{video.details.channel_title}</p>
+              <p className="text-gray-600 text-sm mb-2 line-clamp-1 font-medium">{video.details.channel_title}</p>
+
+              {/* Video Tags */}
+              {Array.isArray(video.tags) && video.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {video.tags.map((tag: string) => (
+                    <Badge key={tag} className="bg-orange-50 text-orange-700 border border-orange-200 px-2 py-1 text-xs font-semibold rounded-full">
+                      <Tag className="w-3 h-3 mr-1 inline" />{tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">

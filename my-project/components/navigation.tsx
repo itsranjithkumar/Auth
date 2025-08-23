@@ -40,6 +40,17 @@ export function Navigation() {
                   <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
                 )}
                 <span className="font-medium text-gray-800">{String(user.email ?? user.sub ?? "")}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="ml-2 text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-3 py-1"
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    window.location.href = "/sign-in";
+                  }}
+                >
+                  Logout
+                </Button>
               </div>
             ) : (
               <Link href="/sign-in">
@@ -81,6 +92,17 @@ export function Navigation() {
                     <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
                   )}
                   <span className="font-medium text-gray-800">{String(user.email ?? user.sub ?? "")}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2 text-gray-700 border-gray-300 hover:bg-gray-100 rounded-full px-3 py-1"
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      window.location.href = "/sign-in";
+                    }}
+                  >
+                    Logout
+                  </Button>
                 </div>
               ) : (
                 <Link href="/sign-in">
