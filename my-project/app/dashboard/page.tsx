@@ -5,7 +5,7 @@ import { Navigation } from "@/components/navigation"
 import { VideoCard } from "@/components/video-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Sparkles, TrendingUp, Play, BookOpen, Brain } from "lucide-react"
+import { ArrowRight, Sparkles, TrendingUp, Play, BookOpen, Brain, Tag, Filter } from "lucide-react"
 import Link from "next/link"
 import { videoData } from "@/lib/data"
 import type { VideoQuestion, VideoFlashcard } from "@/lib/video-types"
@@ -16,6 +16,7 @@ export default function DashboardPage() {
     () =>
       videoData.map((video) => ({
         ...video,
+        tags: video.tags ?? [],
         details: video.details ?? {
           title: "",
           description: "",
@@ -52,8 +53,35 @@ export default function DashboardPage() {
     [videoData],
   )
 
-  const featuredVideos = normalizedVideoData.slice(0, 6)
+  // Get all unique tags from videos
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>()
+    normalizedVideoData.forEach(video => {
+      video.tags.forEach((tag: string) => tagSet.add(tag))
+    })
+    return Array.from(tagSet).sort()
+  }, [normalizedVideoData])
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [continueLearningVideos, setContinueLearningVideos] = useState<typeof normalizedVideoData>([])
+
+  // Filter videos based on selected tags
+  const filteredVideos = useMemo(() => {
+    if (selectedTags.length === 0) return normalizedVideoData
+    return normalizedVideoData.filter(video => 
+      selectedTags.some(tag => (video.tags as string[]).includes(tag))
+    )
+  }, [normalizedVideoData, selectedTags])
+
+  const featuredVideos = filteredVideos.slice(0, 6)
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    )
+  }
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -125,7 +153,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
           <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-blue-100 rounded-2xl p-3">
@@ -162,7 +190,64 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-gray-900 mb-1">Flashcards</h3>
             <p className="text-gray-600 text-sm">Memory reinforcement</p>
           </div>
+
+          <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border border-gray-200 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-orange-100 rounded-2xl p-3">
+                <Tag className="w-6 h-6 text-orange-600" />
+              </div>
+              <span className="text-3xl font-bold text-gray-900">{allTags.length}</span>
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-1">Topics</h3>
+            <p className="text-gray-600 text-sm">Learning categories</p>
+          </div>
         </div>
+
+        {/* Tags Filter Section */}
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Filter className="w-6 h-6 text-gray-600" />
+              <h2 className="font-bold text-2xl text-gray-900">Filter by Topics</h2>
+            </div>
+            {selectedTags.length > 0 && (
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedTags([])}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                Clear All
+              </Button>
+            )}
+          </div>
+          
+          <div className="flex flex-wrap gap-3">
+            {allTags.map((tag) => (
+              <Badge
+                key={tag}
+                variant={selectedTags.includes(tag) ? "default" : "secondary"}
+                className={`cursor-pointer px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  selectedTags.includes(tag)
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                onClick={() => toggleTag(tag)}
+              >
+                <Tag className="w-3 h-3 mr-2" />
+                {tag}
+              </Badge>
+            ))}
+          </div>
+          
+          {selectedTags.length > 0 && (
+            <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+              <p className="text-blue-800 text-sm">
+                <strong>Filtering by:</strong> {selectedTags.join(", ")} 
+                <span className="ml-2 text-blue-600">({filteredVideos.length} videos found)</span>
+              </p>
+            </div>
+          )}
+        </section>
 
         {/* Featured Content */}
         <section className="mb-16">

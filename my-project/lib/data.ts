@@ -4,6 +4,11 @@ export const videoData = [
     "video_id": "https://youtu.be/skWhn8W9P_Y",
     "created_at": "2025-08-23T00:13:00.409000",
     "status": "completed",
+    "tags": [
+      "genai",
+      "week1",
+      "lect1.1"
+    ],
     "updated_at": "2025-08-22T18:43:00.527000",
     "error": null,
     "api_call_count": {
@@ -723,6 +728,7 @@ export const videoData = [
     "video_id": "https://www.youtube.com/watch?v=RVL6E2PDoNc&list=PLlruGeWLgfJP5d1lxY9oBN5mf_9O2Wbbc&index=3&ab_channel=IITMadras-B.S.DegreeProgramme",
     "created_at": "2025-08-22T00:04:56.603000",
     "status": "completed",
+    "tags": [],
     "updated_at": "2025-08-21T18:34:56.827000",
     "error": "Error fetching transcript: type object 'YouTubeTranscriptApi' has no attribute 'get_transcript'",
     "api_call_count": {
@@ -1939,6 +1945,7 @@ export const videoData = [
     "video_id": "https://www.youtube.com/watch?v=b056aoGbm94&list=PLlruGeWLgfJP5d1lxY9oBN5mf_9O2Wbbc&index=3&ab_channel=IITMadras-B.S.DegreeProgramme",
     "created_at": "2025-08-21T22:55:26.149000",
     "status": "completed",
+    "tags": [],
     "updated_at": "2025-08-21T17:25:26.324000",
     "error": null,
     "api_call_count": {
